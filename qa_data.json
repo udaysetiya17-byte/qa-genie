@@ -1,0 +1,230 @@
+{
+  "test_cases": [
+    {
+      "Test Case ID": "TC001",
+      "Test Scenario": "Verify successful SSO login with valid corporate credentials on Web",
+      "Preconditions": "User has a valid corporate account configured in the Identity Provider (IdP).",
+      "Test Steps": "1. Navigate to the web application login page. 2. Click on 'Sign in with SSO'. 3. Enter valid corporate email and password on the IdP login page. 4. Complete MFA if prompted.",
+      "Expected Result": "User is successfully authenticated and redirected to the application dashboard.",
+      "Priority": "High",
+      "Test Type": "Functional"
+    },
+    {
+      "Test Case ID": "TC002",
+      "Test Scenario": "Verify successful SSO login using deep linking on Mobile App",
+      "Preconditions": "Mobile app is installed and IdP app is present on the device.",
+      "Test Steps": "1. Open the mobile application. 2. Tap 'Login with SSO'. 3. Enter valid enterprise credentials in the native/browser flow.",
+      "Expected Result": "User is authenticated and session is securely established within the mobile app.",
+      "Priority": "High",
+      "Test Type": "Mobile"
+    },
+    {
+      "Test Case ID": "TC003",
+      "Test Scenario": "Verify API token generation upon successful OAuth/SAML callback",
+      "Preconditions": "IdP authentication endpoint is up and accessible.",
+      "Test Steps": "1. Send a POST request to the application's SSO callback API endpoint with a valid authorization code. 2. Inspect response status and payload.",
+      "Expected Result": "API returns HTTP 200 OK along with a valid JWT access token and refresh token.",
+      "Priority": "High",
+      "Test Type": "API"
+    },
+    {
+      "Test Case ID": "TC004",
+      "Test Scenario": "Verify SSO login failure with invalid password",
+      "Preconditions": "User has a valid account in the IdP.",
+      "Test Steps": "1. Navigate to the application login page. 2. Click 'Sign in with SSO'. 3. Enter a valid email and an incorrect password.",
+      "Expected Result": "Authentication fails, and an appropriate error message is displayed by the IdP.",
+      "Priority": "High",
+      "Test Type": "Negative"
+    },
+    {
+      "Test Case ID": "TC005",
+      "Test Scenario": "Verify error handling when SSO IdP service is down",
+      "Preconditions": "IdP service is temporarily unavailable or unreachable.",
+      "Test Steps": "1. Click 'Sign in with SSO' on the application login page. 2. Observe the behavior when redirecting to IdP.",
+      "Expected Result": "Application catches the timeout/connection error and displays a user-friendly error message without crashing.",
+      "Priority": "Medium",
+      "Test Type": "Error handling"
+    },
+    {
+      "Test Case ID": "TC006",
+      "Test Scenario": "Verify SAML response signature validation for security",
+      "Preconditions": "Intercepting proxy configured to capture SAML assertions.",
+      "Test Steps": "1. Initiate SSO login. 2. Capture the SAML response token. 3. Modify the assertion payload manually without a valid signature and submit to the application.",
+      "Expected Result": "Application rejects the modified SAML response with an invalid signature error and denies access.",
+      "Priority": "High",
+      "Test Type": "Security"
+    },
+    {
+      "Test Case ID": "TC007",
+      "Test Scenario": "Verify authorization and role assignment upon first-time SSO login (JIT Provisioning)",
+      "Preconditions": "User exists in IdP but has no pre-existing account in the application database.",
+      "Test Steps": "1. Perform SSO login with the new user credentials. 2. Verify database records and user role assignment.",
+      "Expected Result": "User account is Just-In-Time (JIT) provisioned with default standard roles.",
+      "Priority": "Medium",
+      "Test Type": "Permission and authorization"
+    },
+    {
+      "Test Case ID": "TC008",
+      "Test Scenario": "Verify session termination and Single Logout (SLO) integration",
+      "Preconditions": "User is logged into both the application and the IdP session.",
+      "Test Steps": "1. Click 'Logout' within the application. 2. Attempt to navigate back or access protected API endpoints.",
+      "Expected Result": "User session is destroyed locally and globally via SLO, requiring re-authentication.",
+      "Priority": "High",
+      "Test Type": "Integration"
+    },
+    {
+      "Test Case ID": "TC009",
+      "Test Scenario": "Verify regression of standard username/password login after SSO implementation",
+      "Preconditions": "Application supports both local credentials and SSO.",
+      "Test Steps": "1. Attempt login using legacy username and password. 2. Verify access.",
+      "Expected Result": "Legacy login functions as expected alongside SSO without introducing conflicts.",
+      "Priority": "Medium",
+      "Test Type": "Regression"
+    },
+    {
+      "Test Case ID": "TC010",
+      "Test Scenario": "Verify field validation for empty email input on SSO domain lookup",
+      "Preconditions": "SSO login flow requires entering email first to determine the IdP domain.",
+      "Test Steps": "1. Leave the email field blank. 2. Click 'Next' or 'Sign in with SSO'.",
+      "Expected Result": "Inline validation error 'Email is required' is displayed.",
+      "Priority": "Low",
+      "Test Type": "Field validations"
+    },
+    {
+      "Test Case ID": "TC011",
+      "Test Scenario": "Verify edge case handling for extremely long email addresses in SSO lookup",
+      "Preconditions": "SSO login page is open.",
+      "Test Steps": "1. Input an email address exceeding 255 characters into the SSO lookup field. 2. Submit the form.",
+      "Expected Result": "Field correctly restricts input length or displays a validation error indicating the limit.",
+      "Priority": "Low",
+      "Test Type": "Boundary and edge cases"
+    },
+    {
+      "Test Case ID": "TC012",
+      "Test Scenario": "Verify web UI responsiveness of the SSO login button across devices",
+      "Preconditions": "Application opened in browser with various viewport dimensions.",
+      "Test Steps": "1. Resize browser window to mobile, tablet, and desktop sizes. 2. Inspect the SSO login button placement and usability.",
+      "Expected Result": "SSO button remains visible, properly aligned, and clickable without overlapping elements.",
+      "Priority": "Low",
+      "Test Type": "Web testing"
+    },
+    {
+      "Test Case ID": "TC013",
+      "Test Scenario": "Verify mobile app behavior on configuration change (e.g., screen rotation) during SSO flow",
+      "Preconditions": "User is in the middle of authenticating via external browser on mobile.",
+      "Test Steps": "1. Rotate the mobile device from portrait to landscape while on the IdP login screen. 2. Complete authentication.",
+      "Expected Result": "App handles the configuration change gracefully without losing session state or crashing.",
+      "Priority": "Low",
+      "Test Type": "Mobile"
+    },
+    {
+      "Test Case ID": "TC014",
+      "Test Scenario": "Verify API handling of expired or malformed authorization codes",
+      "Preconditions": "An authorization code that has already been used or expired.",
+      "Test Steps": "1. Send a POST request to the token exchange API endpoint using the expired/used code.",
+      "Expected Result": "API returns HTTP 400 Bad Request or HTTP 401 Unauthorized with a descriptive error code.",
+      "Priority": "Medium",
+      "Test Type": "API"
+    },
+    {
+      "Test Case ID": "TC015",
+      "Test Scenario": "Verify unauthorized access attempt to protected resources without SSO token",
+      "Preconditions": "User is not authenticated.",
+      "Test Steps": "1. Directly navigate to a protected dashboard URL via web browser. 2. Attempt to call a secured API endpoint without Bearer token.",
+      "Expected Result": "User is redirected to the login page / API returns HTTP 401 Unauthorized.",
+      "Priority": "High",
+      "Test Type": "Security"
+    },
+    {
+      "Test Case ID": "TC016",
+      "Test Scenario": "Verify non-functional performance under concurrent SSO logins",
+      "Preconditions": "Load testing tool configured to simulate multiple concurrent users.",
+      "Test Steps": "1. Simulate 100 concurrent users initiating the SSO login flow simultaneously.",
+      "Expected Result": "System handles the load successfully with response times under acceptable thresholds and no authentication bottlenecks.",
+      "Priority": "Medium",
+      "Test Type": "Non-functional Testing"
+    },
+    {
+      "Test Case ID": "TC017",
+      "Test Scenario": "Verify integration with third-party IdP (e.g., Okta / Azure AD)",
+      "Preconditions": "Application is integrated with a specific enterprise IdP.",
+      "Test Steps": "1. Trigger SSO redirect. 2. Verify that the user is correctly routed to the third-party IdP login portal.",
+      "Expected Result": "Seamless redirection to the correct third-party provider domain and UI.",
+      "Priority": "High",
+      "Test Type": "Integration"
+    },
+    {
+      "Test Case ID": "TC018",
+      "Test Scenario": "Verify access revocation when user is disabled in the IdP directory",
+      "Preconditions": "User has an active session in the application, but their account is deactivated in the IdP.",
+      "Test Steps": "1. Deactivate user in IdP. 2. Attempt to perform an action requiring token validation or token refresh in the application.",
+      "Expected Result": "Application rejects the refreshed token or session, terminating access immediately.",
+      "Priority": "High",
+      "Test Type": "Permission and authorization"
+    },
+    {
+      "Test Case ID": "TC019",
+      "Test Scenario": "Verify input sanitization on SSO login parameter fields against XSS",
+      "Preconditions": "SSO login page is accessible.",
+      "Test Steps": "1. Input script tags `<script>alert(1)</script>` into the SSO email/domain input field. 2. Submit the form.",
+      "Expected Result": "Input is properly sanitized/escaped, and no script execution occurs in the browser.",
+      "Priority": "High",
+      "Test Type": "Security"
+    },
+    {
+      "Test Case ID": "TC020",
+      "Test Scenario": "Verify backward compatibility of existing user sessions after SSO patch deployment",
+      "Preconditions": "Existing users have active active sessions prior to deployment.",
+      "Test Steps": "1. Deploy SSO feature update. 2. Check status of currently logged-in users.",
+      "Expected Result": "Existing valid sessions are preserved and unaffected by the new integration.",
+      "Priority": "Medium",
+      "Test Type": "Regression"
+    },
+    {
+      "Test Case ID": "TC021",
+      "Test Scenario": "Verify handling of network interruption during OAuth callback redirect",
+      "Preconditions": "User is authenticating via SSO.",
+      "Test Steps": "1. Simulate a network drop immediately after IdP authenticates and redirects back to the application callback URL.",
+      "Expected Result": "Application displays a network error message allowing the user to retry the login process.",
+      "Priority": "Low",
+      "Test Type": "Error handling"
+    },
+    {
+      "Test Case ID": "TC022",
+      "Test Scenario": "Verify API response headers for security best practices on SSO endpoints",
+      "Preconditions": "API endpoints are active.",
+      "Test Steps": "1. Send a request to any SSO-related API endpoint. 2. Inspect response headers.",
+      "Expected Result": "Security headers such as Strict-Transport-Security, X-Content-Type-Options, and X-Frame-Options are present.",
+      "Priority": "Medium",
+      "Test Type": "Security"
+    },
+    {
+      "Test Case ID": "TC023",
+      "Test Scenario": "Verify user role mapping when IdP sends multiple group claims",
+      "Preconditions": "IdP is configured to send custom SAML attributes containing group memberships.",
+      "Test Steps": "1. Log in via SSO with a user belonging to multiple groups. 2. Verify application permission levels.",
+      "Expected Result": "Application correctly parses group claims and assigns the highest or combined authorized privilege level.",
+      "Priority": "Medium",
+      "Test Type": "Integration"
+    },
+    {
+      "Test Case ID": "TC024",
+      "Test Scenario": "Verify mobile deep link fallback when application is not installed",
+      "Preconditions": "Mobile device does not have the target app installed.",
+      "Test Steps": "1. Click an SSO authentication deep link from an email or external source.",
+      "Expected Result": "User is gracefully redirected to the App Store / Play Store or web fallback page.",
+      "Priority": "Low",
+      "Test Type": "Mobile"
+    },
+    {
+      "Test Case ID": "TC025",
+      "Test Scenario": "Verify prevention of replay attacks using one-time use authorization codes",
+      "Preconditions": "An authorization code has already been successfully exchanged for a token once.",
+      "Test Steps": "1. Capture the authorization code from a previous successful login. 2. Replay the exact same authorization code request to the SSO token API.",
+      "Expected Result": "API rejects the request with an error indicating the code has already been redeemed.",
+      "Priority": "High",
+      "Test Type": "Security"
+    }
+  ],
+  "execution_results": []
+}

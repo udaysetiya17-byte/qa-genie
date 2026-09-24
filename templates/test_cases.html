@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QA Genie - Test Cases</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+
+        /* HEADER */
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 22px 50px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .brand {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 16px;
+        }
+
+
+        /* MAIN */
+
+        .container {
+            padding: 40px 5%;
+        }
+
+
+        h1 {
+            font-size: 44px;
+            margin: 0 0 10px;
+        }
+
+
+        .subtitle {
+            color: #64748b;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+
+        /* TEST CASE CARD */
+
+        .test-case {
+            background: white;
+
+            border-radius: 16px;
+
+            margin-bottom: 24px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.07);
+
+            border-left: 5px solid #5b45e8;
+
+            overflow: hidden;
+        }
+
+
+        /* CASE HEADER */
+
+        .case-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 22px 26px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        .case-id {
+            font-weight: bold;
+
+            color: #4f46e5;
+
+            font-size: 17px;
+        }
+
+
+        .priority {
+            padding: 7px 14px;
+
+            border-radius: 20px;
+
+            background: #eef2ff;
+
+            color: #4338ca;
+
+            font-weight: bold;
+
+            font-size: 13px;
+        }
+
+
+        /* SCENARIO */
+
+        .scenario {
+            padding: 20px 26px 5px;
+
+            font-size: 21px;
+
+            font-weight: bold;
+        }
+
+
+        .content {
+            padding: 0 26px 22px;
+        }
+
+
+        /* SECTIONS */
+
+        .section {
+            margin-top: 18px;
+        }
+
+
+        .section-title {
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #64748b;
+
+            margin-bottom: 8px;
+
+            text-transform: uppercase;
+        }
+
+
+        .section-content {
+            background: #f8fafc;
+
+            border-radius: 9px;
+
+            padding: 14px;
+
+            line-height: 1.5;
+
+            white-space: pre-line;
+        }
+
+
+        /* =========================
+           EXECUTION SECTION
+           ========================= */
+
+        .execution-area {
+
+            border-top: 1px solid #e5e7eb;
+
+            background: #fafbff;
+
+            padding: 22px 26px;
+        }
+
+
+        .execution-title {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            margin-bottom: 18px;
+
+            color: #172033;
+        }
+
+
+        .execution-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                220px
+                1fr
+                1fr;
+
+            gap: 18px;
+
+            align-items: start;
+        }
+
+
+        /* FIELD */
+
+        .field label {
+
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #475569;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* DROPDOWN */
+
+        select {
+
+            width: 100%;
+
+            height: 44px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            padding: 10px 12px;
+
+            font-size: 14px;
+
+            background: white;
+
+            cursor: pointer;
+        }
+
+
+        select:focus {
+
+            outline: none;
+
+            border-color: #5b45e8;
+
+            box-shadow:
+                0 0 0 3px rgba(91,69,232,0.12);
+        }
+
+
+        /* TEXTAREA */
+
+        textarea {
+
+            width: 100%;
+
+            min-height: 80px;
+
+            resize: vertical;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            padding: 11px 12px;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 14px;
+        }
+
+
+        textarea:focus {
+
+            outline: none;
+
+            border-color: #5b45e8;
+
+            box-shadow:
+                0 0 0 3px rgba(91,69,232,0.12);
+        }
+
+
+        /* BUTTONS */
+
+        .actions {
+
+            display: flex;
+
+            gap: 15px;
+
+            margin: 30px 0 50px;
+        }
+
+
+        .btn {
+
+            display: inline-block;
+
+            border: none;
+
+            border-radius: 9px;
+
+            padding: 13px 22px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+
+        .btn-primary {
+
+            background: #5b45e8;
+
+            color: white;
+        }
+
+
+        .btn-primary:hover {
+
+            background: #4935d0;
+        }
+
+
+        .btn-secondary {
+
+            background: #e2e8f0;
+
+            color: #172033;
+        }
+
+
+        /* EMPTY */
+
+        .empty {
+
+            background: white;
+
+            padding: 80px 30px;
+
+            text-align: center;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.07);
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .execution-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .header {
+
+                padding: 20px;
+            }
+
+
+            .container {
+
+                padding: 25px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+     ========================= -->
+
+<header class="header">
+
+    <div class="brand">
+        🤖 QA Genie
+    </div>
+
+
+    <nav class="nav">
+
+        <a href="/">
+            Generate
+        </a>
+
+        <a href="/reports">
+            Reports
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =========================
+     MAIN
+     ========================= -->
+
+<div class="container">
+
+
+    <h1>
+        Test Cases
+    </h1>
+
+
+    <div class="subtitle">
+
+        Review generated test cases and execute them.
+
+    </div>
+
+
+
+    {% if test_cases %}
+
+
+    <!-- =========================
+         EXECUTION FORM
+         ========================= -->
+
+    <form method="POST"
+          action="/execute">
+
+
+        {% for tc in test_cases %}
+
+
+        <!-- =========================
+             TEST CASE
+             ========================= -->
+
+        <div class="test-case">
+
+
+            <!-- HEADER -->
+
+            <div class="case-header">
+
+                <div class="case-id">
+
+                    {{ tc["Test Case ID"] }}
+
+                </div>
+
+
+                <div class="priority">
+
+                    {{ tc["Priority"] }}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SCENARIO -->
+
+            <div class="scenario">
+
+                {{ tc["Test Scenario"] }}
+
+            </div>
+
+
+
+            <div class="content">
+
+
+                <!-- PRECONDITIONS -->
+
+                <div class="section">
+
+                    <div class="section-title">
+
+                        Preconditions
+
+                    </div>
+
+
+                    <div class="section-content">
+
+                        {{ tc["Preconditions"] }}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TEST STEPS -->
+
+                <div class="section">
+
+                    <div class="section-title">
+
+                        Test Steps
+
+                    </div>
+
+
+                    <div class="section-content">
+
+                        {{ tc["Test Steps"] }}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- EXPECTED RESULT -->
+
+                <div class="section">
+
+                    <div class="section-title">
+
+                        Expected Result
+
+                    </div>
+
+
+                    <div class="section-content">
+
+                        {{ tc["Expected Result"] }}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TEST TYPE -->
+
+                <div class="section">
+
+                    <div class="section-title">
+
+                        Test Type
+
+                    </div>
+
+
+                    <div class="section-content">
+
+                        {{ tc["Test Type"] }}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 EXECUTION AREA
+                 ========================= -->
+
+            <div class="execution-area">
+
+
+                <div class="execution-title">
+
+                    🧪 Test Execution
+
+                </div>
+
+
+
+                <div class="execution-grid">
+
+
+                    <!-- STATUS -->
+
+                    <div class="field">
+
+                        <label>
+                            Execution Status
+                        </label>
+
+
+                        <!--
+                            IMPORTANT:
+
+                            loop.index0 gives:
+
+                            TC001 → status_0
+                            TC002 → status_1
+                            TC003 → status_2
+
+                            This matches app.py.
+                        -->
+
+                        <select
+                            name="status_{{ loop.index0 }}"
+                        >
+
+                            <option value="Not Executed">
+
+                                Not Executed
+
+                            </option>
+
+
+                            <option value="Pass">
+
+                                Passed
+
+                            </option>
+
+
+                            <option value="Fail">
+
+                                Failed
+
+                            </option>
+
+
+                            <option value="Blocked">
+
+                                Blocked
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- ACTUAL RESULT -->
+
+                    <div class="field">
+
+                        <label>
+
+                            Actual Result
+
+                        </label>
+
+
+                        <textarea
+                            name="actual_result_{{ loop.index0 }}"
+                            placeholder="Enter actual result observed during testing..."
+                        ></textarea>
+
+                    </div>
+
+
+
+                    <!-- QA COMMENTS -->
+
+                    <div class="field">
+
+                        <label>
+
+                            QA Comments
+
+                        </label>
+
+
+                        <textarea
+                            name="comments_{{ loop.index0 }}"
+                            placeholder="Add QA comments, defects, observations..."
+                        ></textarea>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% endfor %}
+
+
+
+        <!-- =========================
+             ACTION BUTTONS
+             ========================= -->
+
+        <div class="actions">
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+
+                📊 Generate QA Report
+
+            </button>
+
+
+            <a
+                href="/"
+                class="btn btn-secondary"
+            >
+
+                ← Generate New Test Cases
+
+            </a>
+
+
+        </div>
+
+
+    </form>
+
+
+    {% else %}
+
+
+    <!-- =========================
+         EMPTY STATE
+         ========================= -->
+
+    <div class="empty">
+
+        <h2>
+
+            🤖 No Test Cases Generated
+
+        </h2>
+
+
+        <p>
+
+            Generate test cases from a client requirement
+            to see them here.
+
+        </p>
+
+
+        <br>
+
+
+        <a
+            href="/"
+            class="btn btn-primary"
+        >
+
+            ✨ Generate Test Cases
+
+        </a>
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

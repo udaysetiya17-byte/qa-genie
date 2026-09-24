@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QA Genie - AI Test Case Generator</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 24px 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 30px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .logo-text h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin-bottom: 7px;
+            border-radius: 9px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .menu-item.active {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .menu-item:hover {
+            background: #1f2937;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+            padding: 30px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .topbar p {
+            margin: 7px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #4f46e5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* ================= GENERATOR CARD ================= */
+
+        .generator-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-description {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 190px;
+            resize: vertical;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+
+        /* ================= OPTIONS ================= */
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .option label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #4b5563;
+        }
+
+        select {
+            width: 100%;
+            padding: 11px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background: white;
+            font-size: 13px;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .generate-btn {
+            margin-top: 22px;
+            padding: 13px 25px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(79,70,229,0.25);
+        }
+
+        /* ================= ERROR ================= */
+
+        .error {
+            margin-top: 20px;
+            padding: 14px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        /* ================= RESULTS ================= */
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .result-top h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .download-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 10px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .stat-number {
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* ================= SEARCH ================= */
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px;
+            font-size: 13px;
+            vertical-align: top;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        /* ================= BADGES ================= */
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .critical {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .high {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .test-type {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #6b7280;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 900px) {
+
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo-text,
+            .menu-item span {
+                display: none;
+            }
+
+            .main {
+                margin-left: 70px;
+                padding: 20px;
+            }
+
+            .options,
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width: 600px) {
+
+            .options,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .profile {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🤖
+        </div>
+
+        <div class="logo-text">
+            <h2>QA Genie</h2>
+            <span>AI Test Assistant</span>
+        </div>
+
+    </div>
+
+
+    <div class="menu">
+
+        <div class="menu-item active">
+            ✨
+            <span>Generate</span>
+        </div>
+
+        <div class="menu-item">
+            📋
+            <span>Test Cases</span>
+        </div>
+
+        <div class="menu-item">
+            📊
+            <span>Reports</span>
+        </div>
+
+        <div class="menu-item">
+            ⚙️
+            <span>Settings</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="main">
+
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Generate Test Cases</h1>
+
+            <p>
+                Convert client requirements into comprehensive QA test coverage.
+            </p>
+
+        </div>
+
+
+        <div class="profile">
+
+            <div>
+                <strong>QA Team</strong>
+            </div>
+
+            <div class="avatar">
+                QA
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GENERATOR -->
+
+    <div class="generator-card">
+
+        <div class="section-title">
+            Client Requirement
+        </div>
+
+        <div class="section-description">
+            Paste a Jira task, user story, client requirement or feature description below.
+        </div>
+
+
+        <form method="POST">
+
+            <textarea
+                name="requirement"
+                placeholder="Example:
+
+Add a new user onboarding feature.
+
+Users should be able to register using their email and password.
+An OTP should be sent to the registered email.
+The OTP should expire after 5 minutes..."
+                required
+            >{{ requirement }}</textarea>
+
+
+            <div class="options">
+
+                <div class="option">
+
+                    <label>TEST TYPE</label>
+
+                    <select name="test_type">
+
+                        <option>All Testing</option>
+                        <option>Functional</option>
+                        <option>API</option>
+                        <option>Web</option>
+                        <option>Mobile</option>
+                        <option>Security</option>
+                        <option>Integration</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="option">
+
+                    <label>PRIORITY</label>
+
+                    <select name="priority">
+
+                        <option>All Priorities</option>
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="option">
+
+                    <label>NUMBER OF TEST CASES</label>
+
+                    <select name="case_count">
+
+                        <option>25</option>
+                        <option>50</option>
+                        <option>75</option>
+                        <option>100</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <button class="generate-btn" type="submit">
+
+                🚀 Generate Test Cases
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    {% if error %}
+
+        <div class="error">
+
+            ❌ {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- RESULTS -->
+
+    {% if test_cases %}
+
+    <div class="results">
+
+
+        <div class="result-top">
+
+            <div>
+
+                <h2>
+                    Generated Test Cases
+                </h2>
+
+                <small style="color:#6b7280;">
+                    AI-generated QA coverage based on your requirement
+                </small>
+
+            </div>
+
+
+            <form method="POST" action="/download">
+
+                <input
+                    type="hidden"
+                    name="test_cases"
+                    value='{{ test_cases | tojson }}'
+                >
+
+                <button class="download-btn" type="submit">
+
+                    📥 Download Excel
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-number">
+                    {{ test_cases|length }}
+                </div>
+
+                <div class="stat-label">
+                    Total Test Cases
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-number">
+
+                    {{
+                    test_cases
+                    | selectattr("Priority", "equalto", "Critical")
+                    | list
+                    | length
+                    }}
+
+                </div>
+
+                <div class="stat-label">
+                    Critical
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-number">
+
+                    {{
+                    test_cases
+                    | selectattr("Priority", "equalto", "High")
+                    | list
+                    | length
+                    }}
+
+                </div>
+
+                <div class="stat-label">
+                    High Priority
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-number">
+
+                    {{
+                    test_cases
+                    | selectattr("Priority", "equalto", "Medium")
+                    | list
+                    | length
+                    }}
+
+                </div>
+
+                <div class="stat-label">
+                    Medium Priority
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <input
+            id="search"
+            class="search-box"
+            type="text"
+            placeholder="🔍 Search test cases..."
+            onkeyup="searchTable()"
+        >
+
+
+        <!-- TABLE -->
+
+        <div class="table-card">
+
+            <div class="table-wrapper">
+
+                <table id="testTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>TEST CASE ID</th>
+
+                            <th>TEST SCENARIO</th>
+
+                            <th>PRECONDITIONS</th>
+
+                            <th>TEST STEPS</th>
+
+                            <th>EXPECTED RESULT</th>
+
+                            <th>PRIORITY</th>
+
+                            <th>TEST TYPE</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for tc in test_cases %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ tc["Test Case ID"] }}
+                                </strong>
+                            </td>
+
+
+                            <td>
+                                {{ tc["Test Scenario"] }}
+                            </td>
+
+
+                            <td>
+                                {{ tc["Preconditions"] }}
+                            </td>
+
+
+                            <td>
+                                {{ tc["Test Steps"] }}
+                            </td>
+
+
+                            <td>
+                                {{ tc["Expected Result"] }}
+                            </td>
+
+
+                            <td>
+
+                                {% if tc["Priority"] == "Critical" %}
+
+                                    <span class="badge critical">
+                                        Critical
+                                    </span>
+
+                                {% elif tc["Priority"] == "High" %}
+
+                                    <span class="badge high">
+                                        High
+                                    </span>
+
+                                {% elif tc["Priority"] == "Medium" %}
+
+                                    <span class="badge medium">
+                                        Medium
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge low">
+                                        Low
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge test-type">
+                                    {{ tc["Test Type"] }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    {% else %}
+
+        <div class="empty">
+
+            <div style="font-size:45px;">
+                🤖
+            </div>
+
+            <h3>
+                Ready to generate test cases
+            </h3>
+
+            <p>
+                Enter a client requirement above and let AI build your QA coverage.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- ================= SEARCH SCRIPT ================= -->
+
+<script>
+
+function searchTable() {
+
+    let input =
+        document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+    let rows =
+        document
+        .getElementById("testTable")
+        .getElementsByTagName("tr");
+
+
+    for (let i = 1; i < rows.length; i++) {
+
+        let text =
+            rows[i]
+            .innerText
+            .toLowerCase();
+
+        rows[i].style.display =
+            text.includes(input)
+            ? ""
+            : "none";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
