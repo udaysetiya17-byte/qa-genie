@@ -1,0 +1,412 @@
+
+<!-- templates/chatbot.html -->
+<style>
+    #qa-chat-launcher {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 9998;
+        width: 60px;
+        height: 60px;
+        border: 0;
+        border-radius: 50%;
+        color: white;
+        background: linear-gradient(135deg, #6366f1, #7c3aed);
+        box-shadow: 0 8px 24px rgba(79, 70, 229, .3);
+        font-size: 25px;
+        cursor: pointer;
+    }
+
+    #qa-chat-window {
+        position: fixed;
+        right: 24px;
+        bottom: 96px;
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        width: min(390px, calc(100vw - 28px));
+        height: min(570px, calc(100vh - 125px));
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        box-shadow: 0 18px 60px rgba(15, 23, 42, .2);
+        font-family: Arial, sans-serif;
+    }
+
+    #qa-chat-window.qa-chat-open {
+        display: flex;
+    }
+
+    .qa-chat-header {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 16px;
+        color: #fff;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    }
+
+    .qa-chat-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .18);
+        font-size: 21px;
+    }
+
+    .qa-chat-heading {
+        flex: 1;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .qa-chat-subheading {
+        margin-top: 4px;
+        font-size: 11px;
+        opacity: .85;
+    }
+
+    #qa-chat-close {
+        padding: 5px 9px;
+        border: 0;
+        background: transparent;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    #qa-chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background: #f8fafc;
+    }
+
+    .qa-chat-message {
+        max-width: 88%;
+        margin-bottom: 12px;
+        padding: 11px 13px;
+        border-radius: 13px;
+        font-size: 13px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .qa-chat-message.bot {
+        margin-right: auto;
+        color: #1f2937;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-bottom-left-radius: 4px;
+    }
+
+    .qa-chat-message.user {
+        margin-left: auto;
+        color: #fff;
+        background: #5b50e8;
+        border-bottom-right-radius: 4px;
+    }
+
+    .qa-chat-message.error {
+        color: #b91c1c;
+        background: #fef2f2;
+        border-color: #fecaca;
+    }
+
+    .qa-chat-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        padding: 0 12px 12px;
+        background: #f8fafc;
+    }
+
+    .qa-chat-suggestions button {
+        padding: 7px 10px;
+        border: 1px solid #ddd6fe;
+        border-radius: 18px;
+        background: #fff;
+        color: #5b21b6;
+        font-size: 11px;
+        cursor: pointer;
+    }
+
+    .qa-chat-form {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 12px;
+        border-top: 1px solid #e5e7eb;
+        background: white;
+    }
+
+    #qa-chat-input {
+        flex: 1;
+        width: 0;
+        min-height: 42px;
+        max-height: 100px;
+        resize: vertical;
+        padding: 11px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        outline: none;
+        font: inherit;
+        font-size: 13px;
+    }
+
+    #qa-chat-input:focus {
+        border-color: #6366f1;
+    }
+
+    #qa-chat-send {
+        min-width: 45px;
+        height: 42px;
+        border: 0;
+        border-radius: 10px;
+        background: #4f46e5;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    #qa-chat-send:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+    }
+
+    .qa-chat-footer {
+        padding: 0 12px 10px;
+        color: #9ca3af;
+        background: white;
+        font-size: 10px;
+        text-align: center;
+    }
+
+    @media (max-width: 480px) {
+        #qa-chat-launcher {
+            right: 15px;
+            bottom: 15px;
+        }
+
+        #qa-chat-window {
+            right: 10px;
+            bottom: 85px;
+            height: min(570px, calc(100vh - 105px));
+        }
+    }
+</style>
+
+<button
+    id="qa-chat-launcher"
+    type="button"
+    aria-label="Open QA Genie Assistant"
+    title="Ask QA Genie Assistant"
+>💬</button>
+
+<section
+    id="qa-chat-window"
+    role="dialog"
+    aria-label="QA Genie Assistant"
+    aria-modal="false"
+>
+    <header class="qa-chat-header">
+        <div class="qa-chat-avatar">✦</div>
+
+        <div class="qa-chat-heading">
+            QA Genie Assistant
+            <div class="qa-chat-subheading">
+                AI assistant · Ask me anything
+            </div>
+        </div>
+
+        <button id="qa-chat-close" type="button" aria-label="Close chat">
+            ×
+        </button>
+    </header>
+
+    <div id="qa-chat-messages" aria-live="polite">
+        <div class="qa-chat-message bot">Hi! 👋 I'm your QA Genie Assistant.
+
+I can answer general questions and help you use QA Genie. What would you like to know?</div>
+    </div>
+
+    <div class="qa-chat-suggestions">
+        <button type="button" data-question="How do I generate test cases?">
+            Generate test cases
+        </button>
+        <button type="button" data-question="How do I use the execution report?">
+            Reports help
+        </button>
+        <button type="button" data-question="Explain API testing in simple terms.">
+            Learn QA
+        </button>
+    </div>
+
+    <form id="qa-chat-form" class="qa-chat-form">
+        <textarea
+            id="qa-chat-input"
+            rows="1"
+            maxlength="8000"
+            placeholder="Ask me anything..."
+            aria-label="Type your message"
+            required
+        ></textarea>
+
+        <button id="qa-chat-send" type="submit" aria-label="Send message">
+            ➤
+        </button>
+    </form>
+
+    <div class="qa-chat-footer">
+        AI responses can be inaccurate. Avoid sharing passwords or secrets.
+    </div>
+</section>
+
+<script>
+(function () {
+    // Prevent duplicate initialization if this partial is included twice.
+    if (window.qaGenieChatInitialized) return;
+    window.qaGenieChatInitialized = true;
+
+    const launcher = document.getElementById("qa-chat-launcher");
+    const chatWindow = document.getElementById("qa-chat-window");
+    const closeButton = document.getElementById("qa-chat-close");
+    const messagesBox = document.getElementById("qa-chat-messages");
+    const form = document.getElementById("qa-chat-form");
+    const input = document.getElementById("qa-chat-input");
+    const sendButton = document.getElementById("qa-chat-send");
+    const suggestions = document.querySelector(".qa-chat-suggestions");
+
+    // Conversation is kept in this browser tab's memory.
+    // It is not saved to the QA Genie test-case data file.
+    const history = [];
+
+    function openChat() {
+        chatWindow.classList.add("qa-chat-open");
+        launcher.setAttribute("aria-expanded", "true");
+        input.focus();
+    }
+
+    function closeChat() {
+        chatWindow.classList.remove("qa-chat-open");
+        launcher.setAttribute("aria-expanded", "false");
+    }
+
+    function addMessage(text, sender, isError) {
+        const message = document.createElement("div");
+        message.className = "qa-chat-message " + sender;
+
+        if (isError) {
+            message.classList.add("error");
+        }
+
+        // textContent prevents model responses from being interpreted as HTML.
+        message.textContent = text;
+        messagesBox.appendChild(message);
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+
+        return message;
+    }
+
+    async function sendMessage(rawText) {
+        const message = rawText.trim();
+
+        if (!message || sendButton.disabled) return;
+
+        addMessage(message, "user", false);
+        input.value = "";
+        sendButton.disabled = true;
+
+        const typing = addMessage("Thinking...", "bot", false);
+
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message,
+                    history: history.slice(-12)
+                })
+            });
+
+            const data = await response.json();
+
+            typing.remove();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.reply || "The assistant could not answer."
+                );
+            }
+
+            const reply = data.reply || "I couldn't create a response.";
+            addMessage(reply, "bot", false);
+
+            history.push(
+                { role: "user", content: message },
+                { role: "assistant", content: reply }
+            );
+
+            // Bound browser-side memory.
+            if (history.length > 12) {
+                history.splice(0, history.length - 12);
+            }
+
+        } catch (error) {
+            typing.remove();
+
+            addMessage(
+                error.message || "Connection issue. Please try again.",
+                "bot",
+                true
+            );
+        } finally {
+            sendButton.disabled = false;
+            input.focus();
+        }
+    }
+
+    launcher.addEventListener("click", function () {
+        if (chatWindow.classList.contains("qa-chat-open")) {
+            closeChat();
+        } else {
+            openChat();
+        }
+    });
+
+    closeButton.addEventListener("click", closeChat);
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendMessage(input.value);
+    });
+
+    input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            form.requestSubmit();
+        }
+    });
+
+    suggestions.addEventListener("click", function (event) {
+        const button = event.target.closest("[data-question]");
+        if (!button) return;
+
+        openChat();
+        sendMessage(button.dataset.question);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeChat();
+        }
+    });
+})();
+</script>

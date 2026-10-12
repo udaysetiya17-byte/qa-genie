@@ -1,11 +1,15 @@
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-    <title>QA Genie - Reports</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Genie - Execution Dashboard</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -17,36 +21,103 @@
         .header {
             background: #111827;
             color: white;
-            padding: 20px 35px;
+            padding: 18px 35px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            color: #c4b5fd;
         }
 
         .container {
-            padding: 35px;
+            max-width: 1500px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .muted {
+            color: #64748b;
+            line-height: 1.5;
         }
 
         .cards {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-top: 25px;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .card, .panel {
+            background: white;
+            padding: 23px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #edf0f5;
         }
 
         .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            border-top: 4px solid #94a3b8;
+        }
+
+        .card.passed-card {
+            border-top-color: #16a34a;
+        }
+
+        .card.failed-card {
+            border-top-color: #dc2626;
+        }
+
+        .card.blocked-card {
+            border-top-color: #ea580c;
+        }
+
+        .card.pending-card {
+            border-top-color: #ca8a04;
         }
 
         .card h3 {
-            margin-top: 0;
-            color: #666;
+            margin: 0 0 18px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .number {
-            font-size: 32px;
+            font-size: 34px;
             font-weight: bold;
         }
 
@@ -66,176 +137,458 @@
             color: #ca8a04;
         }
 
-        .summary {
-            background: white;
-            padding: 30px;
-            margin-top: 30px;
-            border-radius: 15px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        .analytics {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 22px;
+            margin-top: 24px;
+        }
+
+        .panel h2 {
+            font-size: 19px;
+            margin: 0 0 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 23px;
+            font-size: 14px;
         }
 
         .progress {
-            background: #eee;
-            height: 25px;
+            width: 100%;
+            height: 12px;
+            background: #e9edf4;
             border-radius: 20px;
             overflow: hidden;
-            margin: 15px 0;
+            margin-top: 10px;
         }
 
         .progress-bar {
-            background: #16a34a;
             height: 100%;
+            border-radius: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .green-bar {
+            background: #16a34a;
+        }
+
+        .red-bar {
+            background: #dc2626;
+        }
+
+        .blue-bar {
+            background: #5b45e8;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 85px 1fr 35px;
+            gap: 12px;
+            align-items: center;
+            margin-top: 23px;
+            font-size: 14px;
+        }
+
+        .chart-track {
+            height: 13px;
+            background: #edf0f5;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th, td {
+            padding: 15px 17px;
+            border-bottom: 1px solid #edf0f5;
+            text-align: left;
+            vertical-align: top;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+        }
+
+        tbody tr:hover {
+            background: #fafbff;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-pass {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-blocked {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
         }
 
         .btn {
             display: inline-block;
-            background: #5b45e8;
-            color: white;
-            padding: 12px 20px;
+            padding: 11px 17px;
             border-radius: 8px;
             text-decoration: none;
-            margin-top: 20px;
+            font-size: 13px;
             font-weight: bold;
+            background: #5b45e8;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
 
+        .btn:hover {
+            background: #4934d0;
+        }
+
+        .btn-secondary {
+            background: #e9e7ff;
+            color: #4934d0;
+        }
+
+        .btn-secondary:hover {
+            background: #dcd7ff;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #64748b;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1100px) {
+            .cards {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .analytics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 18px;
+            }
+
+            .container {
+                padding: 20px 14px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .card, .panel {
+                padding: 17px;
+            }
+
+            .number {
+                font-size: 28px;
+            }
+
+            .page-heading h1 {
+                font-size: 23px;
+            }
+        }
     </style>
-
 </head>
-
 
 <body>
 
-<div class="header">
+<header class="header">
+    <div class="brand">🤖 QA Genie</div>
 
-    <h1>🤖 QA Genie</h1>
+    <nav class="nav">
+        <a href="/">Generate</a>
+        <a href="/test-cases">Test Cases</a>
+        <a href="/reports">Dashboard & Reports</a>
+    </nav>
+</header>
 
-    <div>
+<main class="container">
 
-        <a href="/" style="color:white;margin-right:25px;">
-            Generate
-        </a>
-
-        <a href="/test-cases" style="color:white;">
-            Test Cases
-        </a>
-
-    </div>
-
-</div>
-
-
-<div class="container">
-
-    <h1>📊 QA Execution Report</h1>
-
-    <p>Summary of the current test execution.</p>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <h3>Total</h3>
-
-            <div class="number">
-                {{ total }}
-            </div>
-
+    <div class="page-heading">
+        <div>
+            <h1>📊 Test Execution Dashboard</h1>
+            <p class="muted">
+                Monitor execution progress, test outcomes and QA results.
+            </p>
         </div>
 
+        <a class="btn" href="/download-report">
+            ⬇ Download Execution Report
+        </a>
+    </div>
+
+    <!-- KPI CARDS -->
+    <section class="cards">
 
         <div class="card">
+            <h3>Total Test Cases</h3>
+            <div class="number">{{ total }}</div>
+        </div>
 
+        <div class="card passed-card">
             <h3>Passed</h3>
-
-            <div class="number pass">
-                {{ passed }}
-            </div>
-
+            <div class="number pass">{{ passed }}</div>
         </div>
 
-
-        <div class="card">
-
+        <div class="card failed-card">
             <h3>Failed</h3>
-
-            <div class="number fail">
-                {{ failed }}
-            </div>
-
+            <div class="number fail">{{ failed }}</div>
         </div>
 
-
-        <div class="card">
-
+        <div class="card blocked-card">
             <h3>Blocked</h3>
-
-            <div class="number blocked">
-                {{ blocked }}
-            </div>
-
+            <div class="number blocked">{{ blocked }}</div>
         </div>
 
-
-        <div class="card">
-
+        <div class="card pending-card">
             <h3>Not Executed</h3>
-
-            <div class="number pending">
-                {{ not_executed }}
-            </div>
-
+            <div class="number pending">{{ not_executed }}</div>
         </div>
 
-    </div>
+    </section>
 
+    <!-- ANALYTICS -->
+    <section class="analytics">
 
-    <div class="summary">
+        <div class="panel">
+            <h2>Execution Progress</h2>
+            <p class="muted">Percentage of test cases with an execution result.</p>
 
-        <h2>Execution Summary</h2>
-
-        <p>
-            Executed Test Cases:
-            <strong>{{ executed }}</strong>
-        </p>
-
-        <p>
-            Pass Rate:
-            <strong class="pass">
-                {{ pass_percentage }}%
-            </strong>
-        </p>
-
-        <div class="progress">
-
-            <div
-                class="progress-bar"
-                style="width: {{ pass_percentage }}%;">
+            <div class="metric-row">
+                <span>Executed test cases</span>
+                <strong>{{ executed }} / {{ total }}</strong>
             </div>
 
+            <div class="progress">
+                <div
+                    class="progress-bar blue-bar"
+                    style="width: {{ (executed / total * 100) if total else 0 }}%;">
+                </div>
+            </div>
+
+            <div class="metric-row">
+                <span>Pass rate (of all test cases)</span>
+                <strong class="pass">{{ pass_rate }}%</strong>
+            </div>
+
+            <div class="progress">
+                <div
+                    class="progress-bar green-bar"
+                    style="width: {{ pass_rate }}%;">
+                </div>
+            </div>
+
+            <div class="metric-row">
+                <span>Fail rate (of all test cases)</span>
+                <strong class="fail">{{ fail_rate }}%</strong>
+            </div>
+
+            <div class="progress">
+                <div
+                    class="progress-bar red-bar"
+                    style="width: {{ fail_rate }}%;">
+                </div>
+            </div>
         </div>
 
+        <div class="panel">
+            <h2>Test Results Breakdown</h2>
+            <p class="muted">Distribution by current execution status.</p>
 
-        <p>
-            Fail Rate:
-            <strong class="fail">
-                {{ fail_percentage }}%
-            </strong>
-        </p>
+            <div class="chart-row">
+                <span>Passed</span>
+                <div class="chart-track">
+                    <div
+                        class="chart-fill green-bar"
+                        style="width: {{ (passed / total * 100) if total else 0 }}%;">
+                    </div>
+                </div>
+                <strong>{{ passed }}</strong>
+            </div>
 
+            <div class="chart-row">
+                <span>Failed</span>
+                <div class="chart-track">
+                    <div
+                        class="chart-fill red-bar"
+                        style="width: {{ (failed / total * 100) if total else 0 }}%;">
+                    </div>
+                </div>
+                <strong>{{ failed }}</strong>
+            </div>
 
-        <a class="btn" href="/test-cases">
-            ← Back to Test Cases
-        </a>
+            <div class="chart-row">
+                <span>Blocked</span>
+                <div class="chart-track">
+                    <div
+                        class="chart-fill"
+                        style="background:#ea580c;width:{{ (blocked / total * 100) if total else 0 }}%;">
+                    </div>
+                </div>
+                <strong>{{ blocked }}</strong>
+            </div>
 
-        <a class="btn" href="/download">
-            ⬇ Download Excel
-        </a>
+            <div class="chart-row">
+                <span>Pending</span>
+                <div class="chart-track">
+                    <div
+                        class="chart-fill"
+                        style="background:#ca8a04;width:{{ (not_executed / total * 100) if total else 0 }}%;">
+                    </div>
+                </div>
+                <strong>{{ not_executed }}</strong>
+            </div>
+        </div>
 
-    </div>
+    </section>
 
-</div>
+    <!-- EXECUTION DETAILS -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Execution Details</h2>
+            <a class="btn btn-secondary" href="/test-cases">
+                ← Back to Test Cases
+            </a>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Case ID</th>
+                        <th>Test Scenario</th>
+                        <th>Priority</th>
+                        <th>Test Type</th>
+                        <th>Status</th>
+                        <th>Actual Result</th>
+                        <th>QA Comments</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in execution_results %}
+                    <tr>
+                        <td>
+                            {{ item.get("Test Case ID", "") }}
+                        </td>
+                        <td>
+                            {{ item.get("Test Scenario", "") }}
+                        </td>
+                        <td>
+                            {{ item.get("Priority", "") }}
+                        </td>
+                        <td>
+                            {{ item.get("Test Type", "") }}
+                        </td>
+                        <td>
+                            {% set status = item.get("Status", "Not Executed") %}
+
+                            {% if status == "Pass" %}
+                                <span class="status status-pass">Pass</span>
+                            {% elif status == "Fail" %}
+                                <span class="status status-fail">Fail</span>
+                            {% elif status == "Blocked" %}
+                                <span class="status status-blocked">Blocked</span>
+                            {% else %}
+                                <span class="status status-pending">{{ status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.get("Actual Result", "") }}</td>
+                        <td>{{ item.get("QA Comments", "") }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="empty">
+                            No test cases available yet.
+                            <br><br>
+                            <a class="btn" href="/">Generate Test Cases</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    QA Genie · Test Execution Dashboard
+</footer>
+{% include "chatbot.html" %}
 
 </body>
-
 </html>
