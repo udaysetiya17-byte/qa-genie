@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>QA Genie - AI Test Case Generator</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -19,8 +16,6 @@
             background: #f5f7fb;
             color: #172033;
         }
-
-        /* ================= SIDEBAR ================= */
 
         .sidebar {
             position: fixed;
@@ -74,18 +69,14 @@
             border-radius: 9px;
             color: #cbd5e1;
             font-size: 14px;
+            text-decoration: none;
         }
 
-        .menu-item.active {
+        .menu-item.active,
+        .menu-item:hover {
             background: #4f46e5;
             color: white;
         }
-
-        .menu-item:hover {
-            background: #1f2937;
-        }
-
-        /* ================= MAIN ================= */
 
         .main {
             margin-left: 240px;
@@ -98,6 +89,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            gap: 20px;
         }
 
         .topbar h1 {
@@ -111,816 +103,552 @@
             font-size: 14px;
         }
 
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #4f46e5;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* ================= GENERATOR CARD ================= */
-
-        .generator-card {
-            background: white;
-            border-radius: 16px;
-            padding: 28px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .section-description {
-            color: #6b7280;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 190px;
-            resize: vertical;
-            border: 1px solid #d1d5db;
+        .user-badge {
+            background: #ede9fe;
+            color: #5b21b6;
             border-radius: 10px;
-            padding: 16px;
-            font-size: 14px;
-            outline: none;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-
-        textarea:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
-        }
-
-        /* ================= OPTIONS ================= */
-
-        .options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-top: 20px;
-        }
-
-        .option label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 7px;
-            color: #4b5563;
-        }
-
-        select {
-            width: 100%;
-            padding: 11px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            background: white;
+            padding: 10px 14px;
             font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
-        /* ================= BUTTON ================= */
-
-        .generate-btn {
-            margin-top: 22px;
-            padding: 13px 25px;
-            border: none;
-            border-radius: 9px;
+        .welcome-card {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 18px;
+            padding: 28px;
             color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
+            margin-bottom: 26px;
         }
 
-        .generate-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(79,70,229,0.25);
+        .welcome-card h2 {
+            margin: 0 0 10px;
+            font-size: 23px;
         }
 
-        /* ================= ERROR ================= */
-
-        .error {
-            margin-top: 20px;
-            padding: 14px;
-            background: #fee2e2;
-            color: #991b1b;
-            border-radius: 9px;
-            font-size: 13px;
-        }
-
-        /* ================= RESULTS ================= */
-
-        .results {
-            margin-top: 30px;
-        }
-
-        .result-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .result-top h2 {
+        .welcome-card p {
             margin: 0;
+            line-height: 1.7;
+            max-width: 720px;
+            color: #ede9fe;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 26px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.035);
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+        }
+
+        .card-header h2 {
+            margin: 0 0 8px;
             font-size: 20px;
         }
 
-        .download-btn {
-            background: #16a34a;
-            color: white;
-            border: none;
-            padding: 10px 17px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
+        .card-header p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
-        /* ================= STATS ================= */
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+        .form-group {
+            margin-bottom: 22px;
         }
 
-        .stat-card {
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            margin-bottom: 9px;
+            color: #374151;
+        }
+
+        textarea,
+        select,
+        input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
             background: white;
+            padding: 12px 14px;
+            color: #111827;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        textarea:focus,
+        select:focus,
+        input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .helper-text {
+            margin-top: 7px;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .error-message {
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+            color: #b91c1c;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .info-card {
+            background: #f9fafb;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 18px;
         }
 
-        .stat-number {
-            font-size: 25px;
-            font-weight: 700;
+        .info-card .icon {
+            font-size: 22px;
+            margin-bottom: 12px;
         }
 
-        .stat-label {
-            margin-top: 4px;
-            font-size: 12px;
+        .info-card h3 {
+            margin: 0 0 8px;
+            font-size: 14px;
+        }
+
+        .info-card p {
+            margin: 0;
             color: #6b7280;
-        }
-
-        /* ================= SEARCH ================= */
-
-        .search-box {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #d1d5db;
-            border-radius: 9px;
-            margin-bottom: 15px;
-            outline: none;
-        }
-
-        /* ================= TABLE ================= */
-
-        .table-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1100px;
-        }
-
-        th {
-            background: #f8fafc;
-            color: #475569;
             font-size: 12px;
-            text-align: left;
-            padding: 14px;
-            border-bottom: 1px solid #e5e7eb;
+            line-height: 1.6;
         }
 
-        td {
-            padding: 14px;
-            font-size: 13px;
-            vertical-align: top;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        tr:hover {
-            background: #fafafa;
-        }
-
-        /* ================= BADGES ================= */
-
-        .badge {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .critical {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .high {
-            background: #ffedd5;
-            color: #c2410c;
-        }
-
-        .medium {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .low {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .test-type {
-            background: #e0e7ff;
-            color: #3730a3;
-        }
-
-        /* ================= EMPTY ================= */
-
-        .empty {
+        .footer {
+            color: #9ca3af;
+            font-size: 12px;
             text-align: center;
-            padding: 50px;
-            color: #6b7280;
+            padding: 28px 0 8px;
         }
 
-        /* ================= RESPONSIVE ================= */
-
-        @media(max-width: 900px) {
-
-            .sidebar {
-                width: 70px;
+        @media (max-width: 1000px) {
+            .main {
+                padding: 25px;
             }
 
-            .logo-text,
-            .menu-item span {
-                display: none;
+            .options-grid,
+            .info-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 15px;
+            }
+
+            .logo {
+                padding-bottom: 10px;
+            }
+
+            .menu {
+                display: flex;
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            .menu-item {
+                margin: 0;
+                padding: 10px;
             }
 
             .main {
-                margin-left: 70px;
-                padding: 20px;
-            }
-
-            .options,
-            .stats {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media(max-width: 600px) {
-
-            .options,
-            .stats {
-                grid-template-columns: 1fr;
+                margin-left: 0;
+                padding: 18px;
             }
 
             .topbar {
                 align-items: flex-start;
+                flex-direction: column;
             }
 
-            .profile {
-                display: none;
+            .options-grid,
+            .info-grid {
+                grid-template-columns: 1fr;
             }
 
+            .card {
+                padding: 20px;
+            }
+
+            .welcome-card {
+                padding: 22px;
+            }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">✦</div>
 
-<!-- ================= SIDEBAR ================= -->
-
-<div class="sidebar">
-
-    <div class="logo">
-
-        <div class="logo-icon">
-            🤖
+            <div class="logo-text">
+                <h2>QA Genie</h2>
+                <span>AI TEST CASE GENERATOR</span>
+            </div>
         </div>
 
-        <div class="logo-text">
-            <h2>QA Genie</h2>
-            <span>AI Test Assistant</span>
-        </div>
+        <nav class="menu">
+            <a href="/" class="menu-item active">
+                <span>✧</span>
+                <span>Test Case Generator</span>
+            </a>
 
-    </div>
+            <a href="/test-cases" class="menu-item">
+                <span>▤</span>
+                <span>Test Cases</span>
+            </a>
 
+            <a href="/reports" class="menu-item">
+                <span>▥</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+    </aside>
 
-    <div class="menu">
+    <main class="main">
 
-        <div class="menu-item active">
-            ✨
-            <span>Generate</span>
-        </div>
-
-        <div class="menu-item">
-            📋
-            <span>Test Cases</span>
-        </div>
-
-        <div class="menu-item">
-            📊
-            <span>Reports</span>
-        </div>
-
-        <div class="menu-item">
-            ⚙️
-            <span>Settings</span>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ================= MAIN ================= -->
-
-<div class="main">
-
-
-    <!-- TOPBAR -->
-
-    <div class="topbar">
-
-        <div>
-
-            <h1>Generate Test Cases</h1>
-
-            <p>
-                Convert client requirements into comprehensive QA test coverage.
-            </p>
-
-        </div>
-
-
-        <div class="profile">
-
+        <header class="topbar">
             <div>
-                <strong>QA Team</strong>
+                <h1>AI Test Case Generator</h1>
+                <p>Generate practical QA test cases from your requirements.</p>
             </div>
 
-            <div class="avatar">
-                QA
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- GENERATOR -->
-
-    <div class="generator-card">
-
-        <div class="section-title">
-            Client Requirement
-        </div>
-
-        <div class="section-description">
-            Paste a Jira task, user story, client requirement or feature description below.
-        </div>
-
-
-        <form method="POST">
-
-            <textarea
-                name="requirement"
-                placeholder="Example:
-
-Add a new user onboarding feature.
-
-Users should be able to register using their email and password.
-An OTP should be sent to the registered email.
-The OTP should expire after 5 minutes..."
-                required
-            >{{ requirement }}</textarea>
-
-
-            <div class="options">
-
-                <div class="option">
-
-                    <label>TEST TYPE</label>
-
-                    <select name="test_type">
-
-                        <option>All Testing</option>
-                        <option>Functional</option>
-                        <option>API</option>
-                        <option>Web</option>
-                        <option>Mobile</option>
-                        <option>Security</option>
-                        <option>Integration</option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="option">
-
-                    <label>PRIORITY</label>
-
-                    <select name="priority">
-
-                        <option>All Priorities</option>
-                        <option>Critical</option>
-                        <option>High</option>
-                        <option>Medium</option>
-                        <option>Low</option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="option">
-
-                    <label>NUMBER OF TEST CASES</label>
-
-                    <select name="case_count">
-
-                        <option>25</option>
-                        <option>50</option>
-                        <option>75</option>
-                        <option>100</option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <button class="generate-btn" type="submit">
-
-                🚀 Generate Test Cases
-
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <!-- ERROR -->
-
-    {% if error %}
-
-        <div class="error">
-
-            ❌ {{ error }}
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- RESULTS -->
-
-    {% if test_cases %}
-
-    <div class="results">
-
-
-        <div class="result-top">
-
-            <div>
-
-                <h2>
-                    Generated Test Cases
-                </h2>
-
-                <small style="color:#6b7280;">
-                    AI-generated QA coverage based on your requirement
-                </small>
-
-            </div>
-
-
-            <form method="POST" action="/download">
-
-                <input
-                    type="hidden"
-                    name="test_cases"
-                    value='{{ test_cases | tojson }}'
-                >
-
-                <button class="download-btn" type="submit">
-
-                    📥 Download Excel
-
-                </button>
-
-            </form>
-
-        </div>
-
-
-        <!-- STATS -->
-
-        <div class="stats">
-
-            <div class="stat-card">
-
-                <div class="stat-number">
-                    {{ test_cases|length }}
-                </div>
-
-                <div class="stat-label">
-                    Total Test Cases
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-number">
-
-                    {{
-                    test_cases
-                    | selectattr("Priority", "equalto", "Critical")
-                    | list
-                    | length
-                    }}
-
-                </div>
-
-                <div class="stat-label">
-                    Critical
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-number">
-
-                    {{
-                    test_cases
-                    | selectattr("Priority", "equalto", "High")
-                    | list
-                    | length
-                    }}
-
-                </div>
-
-                <div class="stat-label">
-                    High Priority
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-number">
-
-                    {{
-                    test_cases
-                    | selectattr("Priority", "equalto", "Medium")
-                    | list
-                    | length
-                    }}
-
-                </div>
-
-                <div class="stat-label">
-                    Medium Priority
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- SEARCH -->
-
-        <input
-            id="search"
-            class="search-box"
-            type="text"
-            placeholder="🔍 Search test cases..."
-            onkeyup="searchTable()"
-        >
-
-
-        <!-- TABLE -->
-
-        <div class="table-card">
-
-            <div class="table-wrapper">
-
-                <table id="testTable">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>TEST CASE ID</th>
-
-                            <th>TEST SCENARIO</th>
-
-                            <th>PRECONDITIONS</th>
-
-                            <th>TEST STEPS</th>
-
-                            <th>EXPECTED RESULT</th>
-
-                            <th>PRIORITY</th>
-
-                            <th>TEST TYPE</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                    {% for tc in test_cases %}
-
-                        <tr>
-
-                            <td>
-                                <strong>
-                                    {{ tc["Test Case ID"] }}
-                                </strong>
-                            </td>
-
-
-                            <td>
-                                {{ tc["Test Scenario"] }}
-                            </td>
-
-
-                            <td>
-                                {{ tc["Preconditions"] }}
-                            </td>
-
-
-                            <td>
-                                {{ tc["Test Steps"] }}
-                            </td>
-
-
-                            <td>
-                                {{ tc["Expected Result"] }}
-                            </td>
-
-
-                            <td>
-
-                                {% if tc["Priority"] == "Critical" %}
-
-                                    <span class="badge critical">
-                                        Critical
-                                    </span>
-
-                                {% elif tc["Priority"] == "High" %}
-
-                                    <span class="badge high">
-                                        High
-                                    </span>
-
-                                {% elif tc["Priority"] == "Medium" %}
-
-                                    <span class="badge medium">
-                                        Medium
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge low">
-                                        Low
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="badge test-type">
-                                    {{ tc["Test Type"] }}
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                    {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-    {% else %}
-
-        <div class="empty">
-
-            <div style="font-size:45px;">
-                🤖
-            </div>
-
-            <h3>
-                Ready to generate test cases
-            </h3>
-
+            <div class="user-badge">✦ AI Powered</div>
+        </header>
+
+        <section class="welcome-card">
+            <h2>Welcome to QA Genie</h2>
             <p>
-                Enter a client requirement above and let AI build your QA coverage.
+                Turn your client requirements into structured test cases.
+                Configure your testing type, priority and number of cases,
+                then generate your test suite with AI.
             </p>
+        </section>
 
-        </div>
+        <section class="content-grid">
+            <div class="card">
 
-    {% endif %}
+                <div class="card-header">
+                    <h2>Generate Test Cases</h2>
+                    <p>
+                        Enter the requirement and select your preferred
+                        generation settings below.
+                    </p>
+                </div>
 
+                {% if error %}
+                    <div class="error-message">
+                        <strong>Generation failed</strong>
+                        <br><br>
+                        {{ error }}
+                    </div>
+                {% endif %}
 
-</div>
+                <form method="POST" action="/" id="generator-form">
 
+                    <div class="form-group">
+                        <label for="requirement">
+                            CLIENT REQUIREMENT
+                        </label>
 
-<!-- ================= SEARCH SCRIPT ================= -->
+                        <textarea
+                            id="requirement"
+                            name="requirement"
+                            placeholder="Example: As an admin, I want to add, edit and delete users so that I can manage application access."
+                            required
+                        >{{ requirement or '' }}</textarea>
 
-<script>
+                        <div class="helper-text">
+                            Include the feature behaviour, validations,
+                            user roles and expected outcomes where possible.
+                        </div>
+                    </div>
 
-function searchTable() {
+                    <div class="options-grid">
 
-    let input =
-        document
-        .getElementById("search")
-        .value
-        .toLowerCase();
+                        <div class="form-group">
+                            <label for="test_type">TEST TYPE</label>
 
-    let rows =
-        document
-        .getElementById("testTable")
-        .getElementsByTagName("tr");
+                            <select id="test_type" name="test_type">
+                                {% set selected_type = test_type or 'All Testing' %}
 
+                                <option value="All Testing"
+                                    {% if selected_type == 'All Testing' %}selected{% endif %}>
+                                    All Testing
+                                </option>
 
-    for (let i = 1; i < rows.length; i++) {
+                                <option value="Functional"
+                                    {% if selected_type == 'Functional' %}selected{% endif %}>
+                                    Functional
+                                </option>
 
-        let text =
-            rows[i]
-            .innerText
-            .toLowerCase();
+                                <option value="Regression"
+                                    {% if selected_type == 'Regression' %}selected{% endif %}>
+                                    Regression
+                                </option>
 
-        rows[i].style.display =
-            text.includes(input)
-            ? ""
-            : "none";
+                                <option value="API"
+                                    {% if selected_type == 'API' %}selected{% endif %}>
+                                    API Testing
+                                </option>
 
-    }
+                                <option value="UI"
+                                    {% if selected_type == 'UI' %}selected{% endif %}>
+                                    UI Testing
+                                </option>
 
-}
+                                <option value="Security"
+                                    {% if selected_type == 'Security' %}selected{% endif %}>
+                                    Security
+                                </option>
 
-</script>
+                                <option value="Performance"
+                                    {% if selected_type == 'Performance' %}selected{% endif %}>
+                                    Performance
+                                </option>
 
+                                <option value="Integration"
+                                    {% if selected_type == 'Integration' %}selected{% endif %}>
+                                    Integration
+                                </option>
+
+                                <option value="Mobile"
+                                    {% if selected_type == 'Mobile' %}selected{% endif %}>
+                                    Mobile
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priority">PRIORITY</label>
+
+                            <select id="priority" name="priority">
+                                {% set selected_priority = priority or 'All Priorities' %}
+
+                                <option value="All Priorities"
+                                    {% if selected_priority == 'All Priorities' %}selected{% endif %}>
+                                    All Priorities
+                                </option>
+
+                                <option value="High"
+                                    {% if selected_priority == 'High' %}selected{% endif %}>
+                                    High
+                                </option>
+
+                                <option value="Medium"
+                                    {% if selected_priority == 'Medium' %}selected{% endif %}>
+                                    Medium
+                                </option>
+
+                                <option value="Low"
+                                    {% if selected_priority == 'Low' %}selected{% endif %}>
+                                    Low
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="number_of_cases">
+                                NUMBER OF TEST CASES
+                            </label>
+
+                            <select
+                                id="number_of_cases"
+                                name="number_of_cases"
+                            >
+                                <option value="25"
+                                    {% if number_of_cases|int == 25 %}selected{% endif %}>
+                                    25
+                                </option>
+
+                                <option value="50"
+                                    {% if number_of_cases|int == 50 %}selected{% endif %}>
+                                    50
+                                </option>
+
+                                <option value="75"
+                                    {% if number_of_cases|int == 75 %}selected{% endif %}>
+                                    75
+                                </option>
+
+                                <option value="100"
+                                    {% if number_of_cases|int == 100 %}selected{% endif %}>
+                                    100
+                                </option>
+                            </select>
+
+                            <div class="helper-text">
+                                Select how many test cases to request.
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="button-row">
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="generate-button"
+                        >
+                            ✦ Generate Test Cases
+                        </button>
+
+                        <button
+                            type="reset"
+                            class="btn btn-secondary"
+                            id="reset-button"
+                        >
+                            Reset Form
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <section class="info-grid">
+            <div class="info-card">
+                <div class="icon">✧</div>
+                <h3>AI-Powered Generation</h3>
+                <p>
+                    Generate structured test cases based on the
+                    requirement you provide.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">☑</div>
+                <h3>Multiple Test Types</h3>
+                <p>
+                    Configure functional, regression, API, UI and
+                    other testing categories.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">▤</div>
+                <h3>Reports and Excel</h3>
+                <p>
+                    Review generated test cases, record execution
+                    results and download reports.
+                </p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            QA Genie · AI Test Case Generator
+        </footer>
+
+    </main>
+
+    <script>
+        const generatorForm = document.getElementById("generator-form");
+        const generateButton = document.getElementById("generate-button");
+        const resetButton = document.getElementById("reset-button");
+
+        generatorForm.addEventListener("submit", function () {
+            generateButton.disabled = true;
+            generateButton.textContent = "Generating...";
+        });
+
+        resetButton.addEventListener("click", function () {
+            window.setTimeout(function () {
+                document.getElementById("number_of_cases").value = "25";
+                document.getElementById("test_type").value = "All Testing";
+                document.getElementById("priority").value = "All Priorities";
+            }, 0);
+        });
+    </script>
 
 </body>
-
 </html>
